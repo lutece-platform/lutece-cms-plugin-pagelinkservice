@@ -1,0 +1,75 @@
+<div class="insert-service">
+
+<form method="post" name="fsearch"
+	action="${url}jsp/admin/plugins/pagelinkservice/SearchPage.jsp">
+
+	<h3>#i18n{pagelinkservice.selector.searchTitle} :</h3>
+	<p>
+		<input type="text" name="page_name" size="50" maxlength="80" />
+		<input type="submit" class="button"
+			value="#i18n{pagelinkservice.selector.searchBtn}" />
+	</p>
+	<input type="hidden" value="${plugin_name}" name="plugin_name" />
+	<input type="hidden" name="input" value="${input}" />	
+</form>
+<form method="post" name="fenvoi"
+	action="${url}jsp/admin/plugins/pagelinkservice/DoInsertPageLink.jsp">
+
+	<#if pages_list?size = 0 >
+		<p>#i18n{pagelinkservice.message.warning.resulsearch.empty}</p>
+	<#else>
+			
+		<h3>#i18n{pagelinkservice.selector.insertListTitle}</h3>
+		
+		<p>
+			<label for="alt">#i18n{pagelinkservice.selector.captionTitle}</label>
+			<input type="text" name="alt" id="alt" value="" size="30" maxlength="50" />
+		</p>
+		<p>
+			<label for="target">#i18n{pagelinkservice.selector.captionTarget}</label>
+			<select name="target" id="target" size=1>
+				<option value="_self">#i18n{pagelinkservice.selector.target.self}</option>
+				<option value="_blank">#i18n{pagelinkservice.selector.target.blank}</option>
+				<option value="_parent">#i18n{pagelinkservice.selector.target.parent}</option>
+				<option value="_top">#i18n{pagelinkservice.selector.target.top}</option>
+			</select>
+		<p>
+			<label for="name">#i18n{pagelinkservice.selector.linkName}</label>
+			<input type="text" name="name" id="name" value="" size="30" maxlength="50" />
+		</p>
+		
+		<h3>#i18n{pagelinkservice.selector.pageChoiceTitle}</h3>
+		
+		<p>
+		<table>
+			<tr>
+				<th><!--#i18n{pagelinkservice.selector.colSelect}--></th>
+				<th>#i18n{pagelinkservice.selector.colId}</th>
+				<th>#i18n{pagelinkservice.selector.colName}</th>
+				<th>#i18n{pagelinkservice.selector.colDescription}</th>
+			</tr>
+			<#list pages_list as page>
+			<tr>
+				<td>
+					<input type="hidden" id="page_name_${page.idPage}"
+						value="${page.labelPage}">
+					<input class="radio" type="radio"
+						name="page" value="${page.idPage}" />
+				</td>
+				<td>${page.idPage}</td>
+				<td>${page.labelPage}</td>
+				<td>${page.descriptionPage}</td>
+			</tr>
+			</#list>
+		</table>
+		</p>
+		<p>
+		<input type="submit" class="button" value="#i18n{portal.util.labelValidate}" /> 
+		<input type="button"
+			class="button" onclick="javascript:history.go(-1);"
+			value="#i18n{portal.util.labelBack}" />
+		</p>
+	</#if>
+	<input type="hidden" value="${plugin_name}" name="plugin_name" />
+	<input type="hidden" name="input" value="${input}" />
+</form>
