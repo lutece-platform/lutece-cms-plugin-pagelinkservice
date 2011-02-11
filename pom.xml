@@ -46,6 +46,6 @@
     <scm>
         <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-pagelinkservice</connection>
         <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-pagelinkservice</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/portal/trunk/plugins/cms/plugin-pagelinkservice</url>
+        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/cms/plugin-pagelinkservice</url>
     </scm>
 </project>
