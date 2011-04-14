@@ -41,11 +41,11 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.page.IPageService;
 import fr.paris.lutece.portal.service.page.PageResourceIdService;
-import fr.paris.lutece.portal.service.page.PageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.portal.PortalService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -104,6 +104,7 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
     private AdminUser _user;
     private Plugin _plugin;
     private String _input;
+    private IPageService _pageService = (IPageService) SpringContextService.getBean("pageService");
 
     ////////////////////////////////////////////////////////////////////////////
     // Methods
@@ -132,8 +133,7 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
 
         for ( PageLinkService pageLinkService : listPages )
         {
-            if ( PageService.getInstance(  )
-                                .isAuthorizedAdminPage( pageLinkService.getIdPage(  ),
+            if ( _pageService.isAuthorizedAdminPage( pageLinkService.getIdPage(  ),
                         PageResourceIdService.PERMISSION_VIEW, user ) )
             {
                 listPagesAuthorized.add( pageLinkService );
@@ -142,9 +142,9 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
 
         model.put( MARK_PAGES_LIST, listPagesAuthorized );
 
-        StringBuffer strListPage = new StringBuffer(  );
+        StringBuilder strListPage = new StringBuilder(  );
 
-        if ( listPages.size(  ) == 0 )
+        if ( listPages.isEmpty() )
         {
             model.put( MARK_SEARCH_MESSAGE, AppPropertiesService.getProperty( PROPERTY_SEARCH_MESSAGE ) );
         }
