@@ -79,11 +79,11 @@ public final class PageLinkServiceDAO
 
         if ( "".equals( strPageName ) )
         {
-            strSQL = " SELECT id_page , name ,description,workgroup_key  FROM core_page";
+            strSQL = " SELECT id_page , name ,description FROM core_page";
         }
         else
         {
-            strSQL = " SELECT id_page , name ,description,workgroup_key  FROM core_page WHERE name LIKE'%" +
+            strSQL = " SELECT id_page , name ,description FROM core_page WHERE name LIKE'%" +
                 strPageName + "%'";
         }
 
@@ -96,7 +96,6 @@ public final class PageLinkServiceDAO
             page.setIdPage( daoUtil.getInt( 1 ) );
             page.setLabelPage( daoUtil.getString( 2 ) );
             page.setDescriptionPage( daoUtil.getString( 3 ) );
-            page.setWorkgroup( daoUtil.getString( 4 ) );
             list.add( page );
         }
 

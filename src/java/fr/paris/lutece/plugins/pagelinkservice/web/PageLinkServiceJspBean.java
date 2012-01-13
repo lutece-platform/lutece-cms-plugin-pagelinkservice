@@ -49,7 +49,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.insert.InsertServiceJspBean;
 import fr.paris.lutece.portal.web.insert.InsertServiceSelectionBean;
@@ -128,8 +127,6 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
 
         Collection<PageLinkService> listPages = PageLinkServiceHome.getPageListbyName( strPageName );
         Collection<PageLinkService> listPagesAuthorized = new ArrayList<PageLinkService>(  );
-
-        listPages = AdminWorkgroupService.getAuthorizedCollection( listPages, user );
 
         for ( PageLinkService pageLinkService : listPages )
         {
