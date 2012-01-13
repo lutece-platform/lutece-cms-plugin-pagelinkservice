@@ -11,7 +11,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-pagelinkservice</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>2.2.1</version>
+    <version>2.2.2-SNAPSHOT</version>
     <name>Lutece pagelinkservice plugin</name>
 
 
@@ -54,8 +54,8 @@
         <jiraComponentId>10052</jiraComponentId>
     </properties>
     <scm>
-        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/tags/plugin-pagelinkservice-2.2.1</connection>
-        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/tags/plugin-pagelinkservice-2.2.1</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/tags/plugin-pagelinkservice-2.2.1</url>
+        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-pagelinkservice</connection>
+        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-pagelinkservice</developerConnection>
+        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/cms/plugin-pagelinkservice</url>
     </scm>
 </project>
