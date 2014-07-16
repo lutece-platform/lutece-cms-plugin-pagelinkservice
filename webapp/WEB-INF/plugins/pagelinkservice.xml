@@ -3,7 +3,7 @@
     <!-- Plugin Informations -->
     <name>pagelinkservice</name>
     <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
     <description>pagelinkservice.plugin.description</description>
     <documentation/>
     <installation/>
