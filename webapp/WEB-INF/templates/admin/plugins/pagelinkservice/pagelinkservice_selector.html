@@ -1,95 +1,80 @@
-<div class="insert-service">
-	<div class="row-fluid">
-		<div class="span12">
-			<form class="form-inline" method="post" name="fsearch" action="${url}jsp/admin/plugins/pagelinkservice/SearchPage.jsp">
-				<input type="hidden" value="${plugin_name}" name="plugin_name" />
-				<input type="hidden" name="input" value="${input}" />	
-				<!-- label>#i18n{pagelinkservice.selector.searchTitle}</label -->
-				<input type="text" name="page_name" placeholer="#i18n{pagelinkservice.selector.searchTitle}" class="input-xxlarge" maxlength="80" />
-				<button type="submit" class="btn btn-primary" title="#i18n{pagelinkservice.selector.searchBtn}">
-					<i class="icon-search icon-white"></i>
-				</button> 
-			</form>
-		</div>
-	</div>	
-	<div class="row-fluid">
-		<div class="span4">	
-			<#if pages_list?size &gt; 0 >
-			<form class="form" method="post" name="fenvoi" action="${url}jsp/admin/plugins/pagelinkservice/DoInsertPageLink.jsp">
-				<input type="hidden" value="${plugin_name}" name="plugin_name" />
-				<input type="hidden" name="input" value="${input}" />
-				<fieldset>
-				<legend>#i18n{pagelinkservice.selector.insertListTitle}</legend>
-				<div class="control-group">
-					<label class="control-label" for="alt">#i18n{pagelinkservice.selector.captionTitle}</label>
-					<div class="controls">
-						<input type="text" name="alt" id="alt" value="" size="30" maxlength="50" />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="name">#i18n{pagelinkservice.selector.linkName}</label>
-					<div class="controls">
-						<input type="text" name="name" id="name" value="" size="30" maxlength="50" />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="target">#i18n{pagelinkservice.selector.captionTarget}</label>
-					<div class="controls">
-						<select name="target" id="target" class="input-small">
-							<option value="_self">#i18n{pagelinkservice.selector.target.self}</option>
-							<option value="_blank">#i18n{pagelinkservice.selector.target.blank}</option>
-							<option value="_parent">#i18n{pagelinkservice.selector.target.parent}</option>
-							<option value="_top">#i18n{pagelinkservice.selector.target.top}</option>
-						</select>
-					</div>
-				</div>
-				<div class="form-actions">
-					<button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i>&nbsp;#i18n{portal.util.labelValidate}</button> 
-					<button type="button" class="btn" onclick="javascript:history.go(-1);"><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
-				</div>
-				</fieldset>
-			</#if>
-		</div>
-		<#if pages_list?size = 0 >
-			</div>
-			<div class="row-fluid">
-				<div class="span12">
-					<div class="alert alert-error">#i18n{pagelinkservice.message.warning.resulsearch.empty}</div>
-				</div>
-			</div>
-		<#else>
-			<div class="span8">
-					<input type="hidden" value="${plugin_name}" name="plugin_name" />
-					<input type="hidden" name="input" value="${input}" />
-					<fieldset>
-					<legend>#i18n{pagelinkservice.selector.pageChoiceTitle}</legend>
-							<ul class="unstyled">
-							<#list pages_list?sort_by("idPage") as page>
-								<li>
-									<input type="hidden" id="page_name_${page.idPage}"	value="${page.labelPage}" />
-									<label class="radio">
-									<input class="radio" type="radio"	name="page" value="${page.idPage}" />
-									${page.labelPage} - ${page.descriptionPage} ( ${page.idPage} ) <a href="jsp/site/Portal.jsp?page_id=${page.idPage}" target="_blank" title="Voir la page"><i class="fa fa-external-link fa-fw"></i></a>
-									</label>
-								</li>
-							</#list>
-						</ul>
-					<div class="form-actions">
-						<button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i>&nbsp;#i18n{portal.util.labelValidate}</button> 
-						<button type="button" class="btn" onclick="javascript:history.go(-1);"><i class="icon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
-					</div>
-						</fieldset>
-					</form>
-					<script src="js/jquery/jquery.min.js" type="text/javascript"></script>
-					<script>
-					$(document).ready( function(){
-						aL = location.search.split("&");
-						aL0 = aL[( aL.length - 1)].split("=");
-						str = aL0[1].replace(/\+/g," ");
-						$("#alt").val( str );
-						$("#name").val( str );
-					});
-					</script>
-			</div>
-	</#if>
-</div>
+<@row class='mt-3'>
+	<@columns>
+		<@tform name='fsearch' action='${url}jsp/admin/plugins/pagelinkservice/SearchPage.jsp'>
+		<@input type='hidden' value=plugin_name name='plugin_name' />
+		<@input type='hidden' name='input' value=.data_model.input />	
+		<@formGroup labelKey='#i18n{pagelinkservice.selector.searchTitle}' helpKey='#i18n{pagelinkservice.selector.searchHelp}' labelFor='page_name' rows=2>
+			<@inputGroup>
+				<@input name='page_name' id='page_name' placeHolder='#i18n{pagelinkservice.selector.searchPlaceholder}' />
+				<@inputGroupItem type='btn'>
+					<@button type='submit' title='#i18n{pagelinkservice.selector.searchBtn}' hideTitle=['all'] buttonIcon='search' />
+				</@inputGroupItem>
+			</@inputGroup>
+		</@formGroup>
+		</@tform>
+	</@columns>
+</@row>	
+<#if pages_list?size &gt; 0 >
+	<@tform name='fenvoi' action='${url}jsp/admin/plugins/pagelinkservice/DoInsertPageLink.jsp'>
+	<@input type='hidden' value=plugin_name name='plugin_name' />
+	<@input type='hidden' name='input' value=.data_model.input />	
+	<@row>
+		<@columns sm=8>
+			<@box>
+				<@boxHeader title='#i18n{pagelinkservice.selector.pageChoiceTitle}' titleClass='h6' />
+				<@boxBody class='overflow-auto' params='style="height:50vh"'>
+				<#list pages_list?sort_by("idPage") as page>
+					<@input type='hidden' name='page_name_${page.idPage!}' id='page_name_${page.idPage!}' value='${page.labelPage}' />
+					<@div class='d-flex justify-content-between mb-1'>
+						<@radioButton name='page' id='page_radio_${page.idPage!}' labelKey='<strong>${page.labelPage}</strong> [${page.idPage!}]' labelFor='page_radio_${page.idPage!}' value='${page.idPage!}' />
+						<@link class='btn btn-outline-secondary btn-sm' href='jsp/site/Portal.jsp?page_id=${page.idPage!}' target='_blank' title='#i18n{pagelinkservice.selector.pageShowPage}'>
+							<@icon style='external-link' />
+						</@link>
+					</@div>
+					</#list>
+				</@boxBody>
+				<@boxFooter class='d-flex justify-content-end'>
+					<@button type='submit' class='me-1' buttonIcon='check' title='#i18n{portal.util.labelValidate}' /> 
+					<@button buttonIcon='x' color='default' title='#i18n{portal.util.labelBack}' params='onclick="javascript:history.go(-1);"'/> 
+				</@boxFooter>
+			</@box>
+		</@columns>
+		<@columns sm=4>
+			<@box>
+				<@boxHeader title='#i18n{pagelinkservice.selector.insertListTitle}' titleClass='h6' />
+				<@boxBody>
+				<@formGroup labelKey='#i18n{pagelinkservice.selector.captionTitle}' labelFor='alt' rows=2>
+					<@input name='alt' id='alt' value='' maxlength=50 />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{pagelinkservice.selector.linkName}' labelFor='name' rows=2>
+					<@input name='name' id='name' value='' maxlength=50 />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{pagelinkservice.selector.captionTarget}' labelFor='target' hideTitle=['all'] rows=2>
+					<@select name='target'>
+						<@option value='_self' label='#i18n{pagelinkservice.selector.target.self}' />
+						<@option value='_blank' label='#i18n{pagelinkservice.selector.target.blank}' />
+						<@option value='_parent' label='#i18n{pagelinkservice.selector.target.parent}' />
+						<@option value='_top' label='#i18n{pagelinkservice.selector.target.top}' />
+					</@select>
+				</@formGroup>
+				</@boxBody>
+			</@box>
+		</@columns>
+	</@row>	
+	</@tform>
+	<script>
+		document.addEventListener('DOMContentLoaded', function(){
+			let aL = location.search.split("&");
+			let aL0 = aL[( aL.length - 1)].split("=");
+			let str = aL0[1].replace(/\+/g," ");
+			document.getElementById('alt').value = str;
+			document.getElementById('name').value = str;
+		});
+	</script>
+<#else>
+	<@row>	
+		<@columns class='d-flex justify-content-center'>
+			<@empty subtitle=' ' />
+		</@columns>
+	</@row>	
+</#if>
