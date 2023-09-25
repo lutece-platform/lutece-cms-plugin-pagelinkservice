@@ -18,6 +18,7 @@
 	<@tform name='fenvoi' action='${url}jsp/admin/plugins/pagelinkservice/DoInsertPageLink.jsp'>
 	<@input type='hidden' value=plugin_name name='plugin_name' />
 	<@input type='hidden' name='input' value=.data_model.input />	
+	
 	<@row>
 		<@columns sm=8>
 			<@box>
@@ -47,7 +48,7 @@
 					<@input name='alt' id='alt' value='' maxlength=50 />
 				</@formGroup>
 				<@formGroup labelKey='#i18n{pagelinkservice.selector.linkName}' labelFor='name' rows=2>
-					<@input name='name' id='name' value='' maxlength=50 />
+					<@input name='name' id='name' value='' />
 				</@formGroup>
 				<@formGroup labelKey='#i18n{pagelinkservice.selector.captionTarget}' labelFor='target' hideTitle=['all'] rows=2>
 					<@select name='target'>
@@ -63,12 +64,17 @@
 	</@row>	
 	</@tform>
 	<script>
-		document.addEventListener('DOMContentLoaded', function(){
+		document.addEventListener( 'DOMContentLoaded', function(){
 			let aL = location.search.split("&");
 			let aL0 = aL[( aL.length - 1)].split("=");
-			let str = aL0[1].replace(/\+/g," ");
-			document.getElementById('alt').value = str;
-			document.getElementById('name').value = str;
+			const strName = decodeURIComponent( aL0[1].replace(/\+/g," " ));
+			const fieldName = document.getElementById('name')
+			if( strName != ''){
+				fieldName.value = strName
+				if ( strName.search( /<\s*img[^>]*src=[\"|\'](.*?)[\"|\'][^>]*\/*>/gi ) >= 0 ){
+					fieldName.parentElement.classList.add('visually-hidden')
+				}
+			}
 		});
 	</script>
 <#else>
