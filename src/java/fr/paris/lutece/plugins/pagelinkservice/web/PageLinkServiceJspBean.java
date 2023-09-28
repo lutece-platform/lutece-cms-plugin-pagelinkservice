@@ -55,7 +55,7 @@ import fr.paris.lutece.portal.web.insert.InsertServiceSelectionBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -222,7 +222,7 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_LINK, null, model );
 
-        return insertUrl( request, _input, StringEscapeUtils.escapeJavaScript( template.getHtml(  ) ) );
+        return insertUrl( request, _input, StringEscapeUtils.escapeEcmaScript( template.getHtml( )) );
     }
 
     private void init( HttpServletRequest request )
