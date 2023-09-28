@@ -44,11 +44,11 @@
 			<@box>
 				<@boxHeader title='#i18n{pagelinkservice.selector.insertListTitle}' titleClass='h6' />
 				<@boxBody>
-				<@formGroup labelKey='#i18n{pagelinkservice.selector.captionTitle}' labelFor='alt' rows=2>
-					<@input name='alt' id='alt' value='' maxlength=50 />
-				</@formGroup>
 				<@formGroup labelKey='#i18n{pagelinkservice.selector.linkName}' labelFor='name' rows=2>
 					<@input name='name' id='name' value='' />
+				</@formGroup>
+				<@formGroup labelKey='#i18n{pagelinkservice.selector.captionTitle}' labelFor='alt' rows=2>
+					<@input name='alt' id='alt' value='' maxlength=50 />
 				</@formGroup>
 				<@formGroup labelKey='#i18n{pagelinkservice.selector.captionTarget}' labelFor='target' hideTitle=['all'] rows=2>
 					<@select name='target'>
@@ -64,18 +64,22 @@
 	</@row>	
 	</@tform>
 	<script>
-		document.addEventListener( 'DOMContentLoaded', function(){
-			let aL = location.search.split("&");
-			let aL0 = aL[( aL.length - 1)].split("=");
-			const strName = decodeURIComponent( aL0[1].replace(/\+/g," " ));
-			const fieldName = document.getElementById('name')
-			if( strName != ''){
-				fieldName.value = strName
-				if ( strName.search( /<\s*img[^>]*src=[\"|\'](.*?)[\"|\'][^>]*\/*>/gi ) >= 0 ){
-					fieldName.parentElement.classList.add('visually-hidden')
-				}
+	document.addEventListener( 'DOMContentLoaded', function(){
+		const serviceUrl  = new URL( window.location );
+		const serviceParams = new URLSearchParams( serviceUrl.search );
+		let textValue=''
+		// Display the key/value pairs
+		for ( const [key, value] of serviceParams.entries() ){
+			if ( key == 'selected_text' ){
+				textValue = value;
 			}
-		});
+		}
+		if( textValue != '' ){
+			const fieldName = document.getElementById('name')
+			fieldName.value = ''
+			fieldName.value = textValue
+		}
+	});
 	</script>
 <#else>
 	<@row>	
