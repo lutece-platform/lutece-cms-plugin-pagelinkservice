@@ -8,7 +8,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-pagelinkservice</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>3.0.3</version>
+    <version>3.0.4-SNAPSHOT</version>
     <name>Lutece pagelinkservice plugin</name>
     <repositories>
         <repository>
@@ -49,6 +49,6 @@
         <connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-pagelinkservice.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-pagelinkservice.git</developerConnection>
         <url>https://github.com/lutece-platform/lutece-cms-plugin-pagelinkservice.git</url>
-      <tag>plugin-pagelinkservice-3.0.3</tag>
+      <tag>HEAD</tag>
   </scm>
 </project>
