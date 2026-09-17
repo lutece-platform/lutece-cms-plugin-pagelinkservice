@@ -1,4 +1,5 @@
-<jsp:include page="../../insert/InsertServiceHeader.jsp" />
-<jsp:useBean id="pageLinkService" scope="session" class="fr.paris.lutece.plugins.pagelinkservice.web.PageLinkServiceJspBean" />
+<%@ page errorPage="../../ErrorPage.jsp" %>
 
-<% response.sendRedirect( pageLinkService.doInsertUrl( request ) );%>
+<%@page import="fr.paris.lutece.plugins.pagelinkservice.web.PageLinkServiceJspBean"%>
+
+${ pageContext.response.sendRedirect( pageLinkServiceJspBean.doInsertUrl( pageContext.request ) ) }

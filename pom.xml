@@ -2,13 +2,13 @@
     <parent>
         <artifactId>lutece-global-pom</artifactId>
         <groupId>fr.paris.lutece.tools</groupId>
-        <version>7.0.2</version>
+        <version>8.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-pagelinkservice</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>3.0.5-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <name>Lutece pagelinkservice plugin</name>
     <repositories>
         <repository>
@@ -30,20 +30,18 @@
         <dependency>
             <groupId>fr.paris.lutece</groupId>
             <artifactId>lutece-core</artifactId>
-            <version>[7.0.10-SNAPSHOT,7.9.9)</version>
+            <version>[8.0.0-SNAPSHOT,)</version>
             <type>lutece-core</type>
         </dependency>
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-html</artifactId>
-            <version>[5.0.0,5.9.9)</version>
+            <version>[6.0.1-SNAPSHOT,)</version>
             <type>lutece-plugin</type>
         </dependency>
     </dependencies>
     <properties>
         <componentName>pagelinkservice</componentName>
-        <jiraProjectName>PLUGINPAGELINKSERVICE</jiraProjectName>
-        <jiraComponentId>10052</jiraComponentId>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-pagelinkservice.git</connection>

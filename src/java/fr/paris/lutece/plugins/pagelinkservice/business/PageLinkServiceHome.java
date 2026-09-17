@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.pagelinkservice.business;
 
 import java.util.Collection;
 
+import jakarta.enterprise.inject.spi.CDI;
+
 
 /**
  * This class provides instances management methods
@@ -43,7 +45,7 @@ import java.util.Collection;
 public final class PageLinkServiceHome
 {
     // Static variable pointed at the DAO instance
-    private static PageLinkServiceDAO _dao = PageLinkServiceDAO.getInstance(  );
+    private static PageLinkServiceDAO _dao = CDI.current( ).select( PageLinkServiceDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated.

@@ -45,7 +45,6 @@ import fr.paris.lutece.portal.service.page.IPageService;
 import fr.paris.lutece.portal.service.page.PageResourceIdService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -55,18 +54,23 @@ import fr.paris.lutece.portal.web.insert.InsertServiceSelectionBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
  * This class provides the user interface to manage PageLibrary features
  */
+@RequestScoped
+@Named
 public class PageLinkServiceJspBean extends InsertServiceJspBean implements InsertServiceSelectionBean
 {
     ////////////////////////////////////////////////////////////////////////////
@@ -103,7 +107,7 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
     private AdminUser _user;
     private Plugin _plugin;
     private String _input;
-    private IPageService _pageService = (IPageService) SpringContextService.getBean("pageService");
+    private IPageService _pageService = CDI.current( ).select( IPageService.class ).get( );
 
     ////////////////////////////////////////////////////////////////////////////
     // Methods
@@ -236,7 +240,7 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
     private HashMap getDefaultModel(  )
     {
         HashMap model = new HashMap(  );
-        model.put( MARK_PLUGIN_NAME, _plugin.getName(  ) );
+        model.put( MARK_PLUGIN_NAME, ( _plugin == null ) ? "" : _plugin.getName(  ) );
         model.put( MARK_INPUT, _input );
 
         return model;
