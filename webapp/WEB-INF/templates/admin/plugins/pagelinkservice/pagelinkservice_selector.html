@@ -2,7 +2,7 @@
 	<@columns>
 		<@tform name='fsearch' action='${url}jsp/admin/plugins/pagelinkservice/SearchPage.jsp'>
 		<@input type='hidden' value=plugin_name name='plugin_name' />
-		<@input type='hidden' name='input' value=.data_model.input />	
+		<@input type='hidden' name='input' value=.data_model.input! />	
 		<@formGroup labelKey='#i18n{pagelinkservice.selector.searchTitle}' helpKey='#i18n{pagelinkservice.selector.searchHelp}' labelFor='page_name' rows=2>
 			<@inputGroup>
 				<@input name='page_name' id='page_name' placeHolder='#i18n{pagelinkservice.selector.searchPlaceholder}' />
@@ -14,10 +14,10 @@
 		</@tform>
 	</@columns>
 </@row>	
-<#if pages_list?size &gt; 0 >
+<#if pages_list?size gt 0 >
 	<@tform name='fenvoi' action='${url}jsp/admin/plugins/pagelinkservice/DoInsertPageLink.jsp'>
 	<@input type='hidden' value=plugin_name name='plugin_name' />
-	<@input type='hidden' name='input' value=.data_model.input />	
+	<@input type='hidden' name='input' value=.data_model.input! />	
 	
 	<@row>
 		<@columns sm=8>

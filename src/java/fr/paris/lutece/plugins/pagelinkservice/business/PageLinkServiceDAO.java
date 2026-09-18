@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.pagelinkservice.business;
 
 import fr.paris.lutece.util.sql.DAOUtil;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -42,28 +44,9 @@ import java.util.Collection;
 /**
  * This class provides Data Access methods for PageLibrary objects
  */
-public final class PageLinkServiceDAO
+@ApplicationScoped
+public class PageLinkServiceDAO
 {
-    /** This class implements the Singleton design pattern. */
-    private static PageLinkServiceDAO _dao = new PageLinkServiceDAO(  );
-
-    /**
-     * Creates a new PageLibraryDAO object.
-     */
-    private PageLinkServiceDAO(  )
-    {
-    }
-
-    /**
-     * Returns the unique instance of the singleton.
-     *
-     * @return the instance
-     */
-    static PageLinkServiceDAO getInstance(  )
-    {
-        return _dao;
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////
     //Access methods to data
 
@@ -87,19 +70,19 @@ public final class PageLinkServiceDAO
                 strPageName + "%'";
         }
 
-        DAOUtil daoUtil = new DAOUtil( strSQL );
-        daoUtil.executeQuery(  );
-
-        while ( daoUtil.next(  ) )
+        try ( DAOUtil daoUtil = new DAOUtil( strSQL ) )
         {
-            PageLinkService page = new PageLinkService(  );
-            page.setIdPage( daoUtil.getInt( 1 ) );
-            page.setLabelPage( daoUtil.getString( 2 ) );
-            page.setDescriptionPage( daoUtil.getString( 3 ) );
-            list.add( page );
-        }
+            daoUtil.executeQuery(  );
 
-        daoUtil.free(  );
+            while ( daoUtil.next(  ) )
+            {
+                PageLinkService page = new PageLinkService(  );
+                page.setIdPage( daoUtil.getInt( 1 ) );
+                page.setLabelPage( daoUtil.getString( 2 ) );
+                page.setDescriptionPage( daoUtil.getString( 3 ) );
+                list.add( page );
+            }
+        }
 
         return list;
     }

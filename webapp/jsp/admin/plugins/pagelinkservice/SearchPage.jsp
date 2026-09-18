@@ -1,5 +1,6 @@
+<%@ page errorPage="../../ErrorPage.jsp" %>
 <jsp:include page="../../insert/InsertServiceHeader.jsp" />
 
-<jsp:useBean id="pagelinkservice" scope="session" class="fr.paris.lutece.plugins.pagelinkservice.web.PageLinkServiceJspBean" />
+<%@page import="fr.paris.lutece.plugins.pagelinkservice.web.PageLinkServiceJspBean"%>
 
-<%= pagelinkservice.getInsertServiceSelectorUI( request ) %>
+${ pageLinkServiceJspBean.getInsertServiceSelectorUI( pageContext.request ) }
