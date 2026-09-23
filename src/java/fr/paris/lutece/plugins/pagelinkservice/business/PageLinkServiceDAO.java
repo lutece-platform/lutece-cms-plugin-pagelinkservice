@@ -38,7 +38,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -47,31 +47,27 @@ import java.util.Collection;
 @ApplicationScoped
 public class PageLinkServiceDAO
 {
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //Access methods to data
+    private static final String SQL_QUERY_SELECTALL = " SELECT id_page , name ,description FROM core_page";
+    private static final String SQL_QUERY_SELECT_BY_NAME = SQL_QUERY_SELECTALL + " WHERE name LIKE ?";
+    private static final String LIKE_WILDCARD = "%";
 
     /**
      * The collection of page
      * @param strPageName the name of the page
      * @return The collection of field
      */
-    Collection selectPageListbyName( String strPageName )
+    List<PageLinkService> selectPageListbyName( String strPageName )
     {
-        ArrayList list = new ArrayList(  );
-        String strSQL;
+        List<PageLinkService> list = new ArrayList<>(  );
+        boolean bFilter = !"".equals( strPageName );
 
-        if ( "".equals( strPageName ) )
+        try ( DAOUtil daoUtil = new DAOUtil( bFilter ? SQL_QUERY_SELECT_BY_NAME : SQL_QUERY_SELECTALL ) )
         {
-            strSQL = " SELECT id_page , name ,description FROM core_page";
-        }
-        else
-        {
-            strSQL = " SELECT id_page , name ,description FROM core_page WHERE name LIKE'%" +
-                strPageName + "%'";
-        }
+            if ( bFilter )
+            {
+                daoUtil.setString( 1, LIKE_WILDCARD + strPageName + LIKE_WILDCARD );
+            }
 
-        try ( DAOUtil daoUtil = new DAOUtil( strSQL ) )
-        {
             daoUtil.executeQuery(  );
 
             while ( daoUtil.next(  ) )

@@ -45,24 +45,27 @@ import fr.paris.lutece.portal.service.page.IPageService;
 import fr.paris.lutece.portal.service.page.PageResourceIdService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.security.ISecurityTokenService;
+import fr.paris.lutece.portal.service.security.SecurityTokenHandler;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.insert.InsertServiceJspBean;
 import fr.paris.lutece.portal.web.insert.InsertServiceSelectionBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
 
@@ -70,179 +73,116 @@ import jakarta.servlet.http.HttpServletRequest;
  * This class provides the user interface to manage PageLibrary features
  */
 @RequestScoped
-@Named
 public class PageLinkServiceJspBean extends InsertServiceJspBean implements InsertServiceSelectionBean
 {
-    ////////////////////////////////////////////////////////////////////////////
-    // Constants
-    private static final String REGEX_PAGE_ID = "^[\\d]+$";
+    private static final long serialVersionUID = 1L;
 
-    //Parameters
+    private static final String REGEX_PAGE_ID = "^[\\d]+$";
+    private static final List<String> LIST_TARGETS = List.of( "_self", "_blank", "_parent", "_top" );
+
     private static final String PARAMETER_PLUGIN_NAME = "plugin_name";
     private static final String PARAMETER_PAGE_NAME = "page_name";
-    private static final String PARAMETER_PAGE_ID = "page";
+    private static final String PARAMETER_PAGE_ID = "id_page";
     private static final String PARAMETER_PAGE_ID_URL = "page_id";
     private static final String PARAMETER_ALT = "alt";
     private static final String PARAMETER_TARGET = "target";
     private static final String PARAMETER_NAME = "name";
     private static final String PARAMETER_INPUT = "input";
 
-    //Properties
-    private static final String PROPERTY_SEARCH_MESSAGE = "message.warning.resulsearch.empty";
+    private static final String MESSAGE_PAGE_NOT_FOUND = "pagelinkservice.message.error.pageNotFound";
 
-    //Markers
     private static final String MARK_PLUGIN_NAME = "plugin_name";
-    private static final String MARK_SEARCH_MESSAGE = "search_message";
     private static final String MARK_PAGES_LIST = "pages_list";
-    private static final String MARK_LIST_PAGE = "list_page";
     private static final String MARK_URL = "url";
     private static final String MARK_TARGET = "target";
     private static final String MARK_ALT = "alt";
     private static final String MARK_NAME = "name";
     private static final String MARK_INPUT = "input";
 
-    //Templates
     private static final String TEMPLATE_SELECTOR_PAGE = "admin/plugins/pagelinkservice/pagelinkservice_selector.html";
     private static final String TEMPLATE_LINK = "admin/plugins/pagelinkservice/pagelinkservice_link.html";
-    private AdminUser _user;
-    private Plugin _plugin;
-    private String _input;
+
     private IPageService _pageService = CDI.current( ).select( IPageService.class ).get( );
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Methods
-
     /**
-     * Return the html form for image selection.
+     * Return the html form for page selection, with the pages matching the searched name that the user may view.
      *
      * @param request The Http Request
      * @return The html form.
      */
+    @Override
     public String getInsertServiceSelectorUI( HttpServletRequest request )
     {
-        init( request );
-
         AdminUser user = AdminUserService.getAdminUser( request );
-        String strSearch = request.getParameter( PARAMETER_PAGE_NAME );
-        String strResultSearch = ( strSearch == null ) ? "" : strSearch;
-        String strPageName = replaceString( strResultSearch, "'", "''" );
+        Plugin plugin = PluginService.getPlugin( request.getParameter( PARAMETER_PLUGIN_NAME ) );
 
-        HashMap model = getDefaultModel(  );
+        List<PageLinkService> listPagesAuthorized = PageLinkServiceHome
+                .getPageListbyName( StringUtils.defaultString( request.getParameter( PARAMETER_PAGE_NAME ) ) ).stream( )
+                .filter( page -> _pageService.isAuthorizedAdminPage( page.getIdPage( ), PageResourceIdService.PERMISSION_VIEW, user ) )
+                .collect( Collectors.toList( ) );
 
-        Collection<PageLinkService> listPages = PageLinkServiceHome.getPageListbyName( strPageName );
-        Collection<PageLinkService> listPagesAuthorized = new ArrayList<PageLinkService>(  );
-
-        for ( PageLinkService pageLinkService : listPages )
-        {
-            if ( _pageService.isAuthorizedAdminPage( pageLinkService.getIdPage(  ),
-                        PageResourceIdService.PERMISSION_VIEW, user ) )
-            {
-                listPagesAuthorized.add( pageLinkService );
-            }
-        }
-
+        Map<String, Object> model = new HashMap<>( );
+        model.put( MARK_PLUGIN_NAME, ( plugin == null ) ? StringUtils.EMPTY : plugin.getName( ) );
+        model.put( MARK_INPUT, request.getParameter( PARAMETER_INPUT ) );
         model.put( MARK_PAGES_LIST, listPagesAuthorized );
+        model.put( MARK_URL, AppPathService.getBaseUrl( request ) );
+        model.put( SecurityTokenHandler.MARK_CSRF_TOKEN, CDI.current( ).select( ISecurityTokenService.class ).get( )
+                .getToken( request, PageLinkServiceSelectorJspBean.ACTION_INSERT_PAGE_LINK ) );
 
-        StringBuilder strListPage = new StringBuilder(  );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PAGE, user.getLocale( ), model );
 
-        if ( listPages.isEmpty() )
-        {
-            model.put( MARK_SEARCH_MESSAGE, AppPropertiesService.getProperty( PROPERTY_SEARCH_MESSAGE ) );
-        }
-
-        String strBaseUrl = AppPathService.getBaseUrl( request );
-
-        // Search Message
-        model.put( MARK_URL, strBaseUrl );
-        model.put( MARK_LIST_PAGE, strListPage.toString(  ) );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PAGE, _user.getLocale(  ), model );
-
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
-     * Replaces a string in an initial string by another string
-     *
-     * @param str the initial string
-     * @param oldStr the string to replace
-     * @param newStr the string which will replace the old string
-     * @return the cleaned string
-     */
-    private String replaceString( String str, String oldStr, String newStr )
-    {
-        // Temporary string to avoid assignment of parameter str
-        String cleanString = str;
-
-        int index = 0;
-
-        while ( true )
-        {
-            index = cleanString.lastIndexOf( oldStr );
-
-            if ( ( index == 2 ) || ( index == -1 ) )
-            {
-                break;
-            }
-
-            cleanString = cleanString.substring( 0, index ) + newStr +
-                cleanString.substring( index + oldStr.length(  ) );
-        }
-
-        return cleanString;
-    }
-
-    /**
-     * Insert the specified url into HTML content
+     * Builds the link to the selected page and returns the url that inserts it into the calling editor field.
      *
      * @param request The http request
-     * @return String The url
+     * @return the insertion url, or the url of an error message when the page is missing or not viewable
      */
-    public String doInsertUrl( HttpServletRequest request )
+    public String getInsertLinkUrl( HttpServletRequest request )
     {
-        init( request );
-
+        AdminUser user = AdminUserService.getAdminUser( request );
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
-        String strTarget = request.getParameter( PARAMETER_TARGET );
-        String strAlt = request.getParameter( PARAMETER_ALT );
-        String strName = request.getParameter( PARAMETER_NAME );
-        HashMap<String, Object> model = new HashMap<String, Object>(  );
-
-        Page page = null;
 
         if ( ( strPageId == null ) || !strPageId.matches( REGEX_PAGE_ID ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        page = PageHome.findByPrimaryKey( Integer.parseInt( strPageId ) );
+        int nPageId = NumberUtils.toInt( strPageId, 0 );
+        Page page = PageHome.findByPrimaryKey( nPageId );
 
-        UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
-        url.addParameter( PARAMETER_PAGE_ID_URL, page.getId(  ) );
-        model.put( MARK_URL, url.getUrl(  ) );
-        model.put( MARK_TARGET, strTarget );
-        model.put( MARK_ALT, strAlt );
-        model.put( MARK_NAME, ( strName.length(  ) == 0 ) ? page.getName(  ) : strName );
+        if ( ( page.getId( ) != nPageId ) || !_pageService.isAuthorizedAdminPage( nPageId, PageResourceIdService.PERMISSION_VIEW, user ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_PAGE_NOT_FOUND, AdminMessage.TYPE_STOP );
+        }
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_LINK, null, model );
+        String strTarget = request.getParameter( PARAMETER_TARGET );
+        String strName = request.getParameter( PARAMETER_NAME );
 
-        return insertUrl( request, _input, StringEscapeUtils.escapeEcmaScript( template.getHtml( )) );
+        UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
+        url.addParameter( PARAMETER_PAGE_ID_URL, page.getId( ) );
+
+        Map<String, Object> model = new HashMap<>( );
+        model.put( MARK_URL, url.getUrl( ) );
+        model.put( MARK_TARGET, LIST_TARGETS.contains( strTarget ) ? strTarget : StringUtils.EMPTY );
+        model.put( MARK_ALT, toHtmlText( StringUtils.defaultString( request.getParameter( PARAMETER_ALT ) ) ) );
+        model.put( MARK_NAME, toHtmlText( StringUtils.isBlank( strName ) ? page.getName( ) : strName ) );
+
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_LINK, user.getLocale( ), model );
+
+        return insertUrl( request, request.getParameter( PARAMETER_INPUT ), StringEscapeUtils.escapeEcmaScript( template.getHtml( ) ) );
     }
 
-    private void init( HttpServletRequest request )
+    /**
+     * Escapes a text for HTML once, whether or not the core XSS filter already encoded some of its characters.
+     *
+     * @param strText the text
+     * @return the escaped text
+     */
+    private static String toHtmlText( String strText )
     {
-        String strPluginName = request.getParameter( PARAMETER_PLUGIN_NAME );
-        _user = AdminUserService.getAdminUser( request );
-        _plugin = PluginService.getPlugin( strPluginName );
-        _input = request.getParameter( PARAMETER_INPUT );
-    }
-
-    private HashMap getDefaultModel(  )
-    {
-        HashMap model = new HashMap(  );
-        model.put( MARK_PLUGIN_NAME, ( _plugin == null ) ? "" : _plugin.getName(  ) );
-        model.put( MARK_INPUT, _input );
-
-        return model;
+        return StringEscapeUtils.escapeHtml4( StringEscapeUtils.unescapeHtml4( strText ) );
     }
 }
