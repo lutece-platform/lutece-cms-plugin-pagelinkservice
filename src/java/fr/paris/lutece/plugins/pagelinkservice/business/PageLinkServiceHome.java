@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.pagelinkservice.business;
 
-import java.util.Collection;
+import java.util.List;
 
 import jakarta.enterprise.inject.spi.CDI;
 
@@ -59,7 +59,7 @@ public final class PageLinkServiceHome
      * @param strPageName the Name of the page
      * @return the list of the page of the database in form of a page Collection object
      */
-    public static Collection getPageListbyName( String strPageName )
+    public static List<PageLinkService> getPageListbyName( String strPageName )
     {
         return _dao.selectPageListbyName( strPageName );
     }

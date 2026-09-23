@@ -1,6 +1,10 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
+
+${ pageContext.setAttribute( 'strContent', pageLinkServiceSelectorJspBean.processController( pageContext.request , pageContext.response ) ) }
+
 <jsp:include page="../../insert/InsertServiceHeader.jsp" />
 
-<%@page import="fr.paris.lutece.plugins.pagelinkservice.web.PageLinkServiceJspBean"%>
-
-${ pageLinkServiceJspBean.getInsertServiceSelectorUI( pageContext.request ) }
+${ pageContext.getAttribute( 'strContent' ) }
+</div>
+</body>
+</html>
