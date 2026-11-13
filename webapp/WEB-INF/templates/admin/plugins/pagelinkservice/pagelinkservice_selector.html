@@ -1,4 +1,6 @@
 <@coreAdminCSSLinks />
+<link href="themes/admin/shared/plugins/pagelinkservice/css/pagelinkservice.css" rel="stylesheet">
+<script src="themes/admin/shared/js/util/lutece-actions.js" defer></script>
 <@row class='mt-3'>
 	<@columns>
 		<@tform name='fsearch' action='${url}jsp/admin/plugins/pagelinkservice/SearchPage.jsp'>
@@ -25,12 +27,12 @@
 		<@columns sm=8>
 			<@box>
 				<@boxHeader title='#i18n{pagelinkservice.selector.pageChoiceTitle}' />
-				<@boxBody class='overflow-auto' params='style="height:50vh"'>
+				<@boxBody class='overflow-auto pagelinkservice-pages'>
 				<#list pages_list?sort_by("idPage") as page>
-					<@input type='hidden' name='page_name_${page.idPage!}' id='page_name_${page.idPage!}' value='${page.labelPage}' />
+					<@input type='hidden' name='page_name_${page.idPage?c}' id='page_name_${page.idPage?c}' value=page.labelPage />
 					<@div class='d-flex justify-content-between mb-1'>
-						<@radioButton name='id_page' id='page_radio_${page.idPage!}' labelKey='<strong>${page.labelPage}</strong> [${page.idPage!}]' labelFor='page_radio_${page.idPage!}' value='${page.idPage!}' />
-						<@link class='btn btn-outline-secondary btn-sm' href='jsp/site/Portal.jsp?page_id=${page.idPage!}' target='_blank' title='#i18n{pagelinkservice.selector.pageShowPage}'>
+						<@radioButton name='id_page' id='page_radio_${page.idPage?c}' labelFor='page_radio_${page.idPage?c}' value='${page.idPage?c}'><span class="form-check-label"><strong>${page.labelPage}</strong> [${page.idPage?c}]</span></@radioButton>
+						<@link class='btn btn-outline-secondary btn-sm' href='jsp/site/Portal.jsp?page_id=${page.idPage?c}' target='_blank' title='#i18n{pagelinkservice.selector.pageShowPage}'>
 							<@icon style='external-link' />
 						</@link>
 					</@div>
@@ -63,7 +65,7 @@
 	<@row>
 		<@columns class='d-flex justify-content-end'>
 			<@button type='submit' class='me-1' buttonIcon='check' title='#i18n{portal.util.labelValidate}' />
-			<@button buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' params='onclick="javascript:history.go(-1);"' />
+			<@aButton href='jsp/admin/plugins/pagelinkservice/SearchPage.jsp?plugin_name=${plugin_name?url}&input=${(.data_model.input!)?url}' buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' params={ 'data-lutece-action': 'back' } />
 		</@columns>
 	</@row>
 	</@tform>
