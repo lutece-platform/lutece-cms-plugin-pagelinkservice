@@ -1,6 +1,7 @@
 <@coreAdminCSSLinks />
 <link href="themes/admin/shared/plugins/pagelinkservice/css/pagelinkservice.css" rel="stylesheet">
 <script src="themes/admin/shared/js/util/lutece-actions.js" defer></script>
+<h1 class="visually-hidden">#i18n{pagelinkservice.insertService.name}</h1>
 <@row class='mt-3'>
 	<@columns>
 		<@tform name='fsearch' action='${url}jsp/admin/plugins/pagelinkservice/SearchPage.jsp'>
@@ -28,15 +29,18 @@
 			<@box>
 				<@boxHeader title='#i18n{pagelinkservice.selector.pageChoiceTitle}' />
 				<@boxBody class='overflow-auto pagelinkservice-pages'>
+				<fieldset>
+				<legend class="visually-hidden">#i18n{pagelinkservice.selector.pageChoiceTitle}</legend>
 				<#list pages_list?sort_by("idPage") as page>
 					<@input type='hidden' name='page_name_${page.idPage?c}' id='page_name_${page.idPage?c}' value=page.labelPage />
 					<@div class='d-flex justify-content-between mb-1'>
-						<@radioButton name='id_page' id='page_radio_${page.idPage?c}' labelFor='page_radio_${page.idPage?c}' value='${page.idPage?c}'><span class="form-check-label"><strong>${page.labelPage}</strong> [${page.idPage?c}]</span></@radioButton>
+						<@radioButton name='id_page' id='page_radio_${page.idPage?c}' labelFor='page_radio_${page.idPage?c}' value='${page.idPage?c}' mandatory=true><span class="form-check-label"><strong>${page.labelPage}</strong> [${page.idPage?c}]</span></@radioButton>
 						<@link class='btn btn-outline-secondary btn-sm' href='jsp/site/Portal.jsp?page_id=${page.idPage?c}' target='_blank' title='#i18n{pagelinkservice.selector.pageShowPage}'>
-							<@icon style='external-link' />
+							<@icon style='external-link' /><span class="visually-hidden">#i18n{pagelinkservice.selector.pageShowPage} ${page.labelPage} #i18n{pagelinkservice.selector.newWindow}</span>
 						</@link>
 					</@div>
 					</#list>
+				</fieldset>
 				</@boxBody>
 			</@box>
 		</@columns>

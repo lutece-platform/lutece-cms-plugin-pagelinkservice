@@ -96,4 +96,27 @@ public class PageLinkServiceTemplatesRenderTest extends LuteceTestCase
         assertFalse( strHtml.contains( "&amp;lt;" ), strHtml );
         assertFalse( strHtml.contains( "onclick" ), strHtml );
     }
+
+    /**
+     * The selector has a page heading, groups its radio buttons under a legend, requires a page, and names the link
+     * that opens each page in a new window.
+     */
+    @Test
+    public void testSelectorIsAccessible( )
+    {
+        PageLinkService page = new PageLinkService( );
+        page.setIdPage( 7 );
+        page.setLabelPage( "Plan" );
+        Map<String, Object> model = new HashMap<>( );
+        model.put( "plugin_name", "pagelinkservice" );
+        model.put( "pages_list", List.of( page ) );
+        model.put( "url", "http://localhost/lutece/" );
+
+        String strHtml = AppTemplateService.getTemplate( TEMPLATE_SELECTOR, Locale.ENGLISH, model ).getHtml( );
+
+        assertTrue( strHtml.contains( "<h1 class=\"visually-hidden\">Insert a link to a Page of the site</h1>" ), strHtml );
+        assertTrue( strHtml.contains( "<legend class=\"visually-hidden\">Page choice</legend>" ), strHtml );
+        assertTrue( strHtml.matches( "(?s).*id=\"page_radio_7\"[^>]*required.*" ), strHtml );
+        assertTrue( strHtml.contains( "<span class=\"visually-hidden\">Show this page Plan (new window)</span>" ), strHtml );
+    }
 }
