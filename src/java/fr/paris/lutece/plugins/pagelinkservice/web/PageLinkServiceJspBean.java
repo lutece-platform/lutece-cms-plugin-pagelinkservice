@@ -172,7 +172,7 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_LINK, user.getLocale( ), model );
 
-        return insertUrl( request, request.getParameter( PARAMETER_INPUT ), StringEscapeUtils.escapeEcmaScript( template.getHtml( ) ) );
+        return insertUrl( request, request.getParameter( PARAMETER_INPUT ), template.getHtml( ) );
     }
 
     /**
