@@ -167,8 +167,8 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_URL, url.getUrl( ) );
         model.put( MARK_TARGET, LIST_TARGETS.contains( strTarget ) ? strTarget : StringUtils.EMPTY );
-        model.put( MARK_ALT, toHtmlText( StringUtils.defaultString( request.getParameter( PARAMETER_ALT ) ) ) );
-        model.put( MARK_NAME, toHtmlText( StringUtils.isBlank( strName ) ? page.getName( ) : strName ) );
+        model.put( MARK_ALT, toPlainText( StringUtils.defaultString( request.getParameter( PARAMETER_ALT ) ) ) );
+        model.put( MARK_NAME, toPlainText( StringUtils.isBlank( strName ) ? page.getName( ) : strName ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_LINK, user.getLocale( ), model );
 
@@ -176,13 +176,13 @@ public class PageLinkServiceJspBean extends InsertServiceJspBean implements Inse
     }
 
     /**
-     * Escapes a text for HTML once, whether or not the core XSS filter already encoded some of its characters.
+     * Decodes once the HTML entities the core XSS filter may have put in a text: the template escapes the plain text.
      *
      * @param strText the text
-     * @return the escaped text
+     * @return the plain text
      */
-    private static String toHtmlText( String strText )
+    private static String toPlainText( String strText )
     {
-        return StringEscapeUtils.escapeHtml4( StringEscapeUtils.unescapeHtml4( strText ) );
+        return StringEscapeUtils.unescapeHtml4( strText );
     }
 }
